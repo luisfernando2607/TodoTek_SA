@@ -1,5 +1,4 @@
 <?php
-
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -9,42 +8,20 @@ class CategorySeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('categories')->insert([
-            [
-                'name' => 'Electrónica',
-                'slug' => 'electronica',
-                'description' => 'Productos electrónicos',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Ropa',
-                'slug' => 'ropa',
-                'description' => 'Prendas de vestir',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Alimentos',
-                'slug' => 'alimentos',
-                'description' => 'Productos alimenticios',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Ferretería',
-                'slug' => 'ferreteria',
-                'description' => 'Herramientas y accesorios',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Oficina',
-                'slug' => 'oficina',
-                'description' => 'Productos de oficina',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+        $categories = [
+            ['name' => 'Electrónica',   'slug' => 'electronica',   'description' => 'Equipos y dispositivos electrónicos'],
+            ['name' => 'Ropa',          'slug' => 'ropa',          'description' => 'Prendas de vestir'],
+            ['name' => 'Alimentos',     'slug' => 'alimentos',     'description' => 'Productos alimenticios'],
+            ['name' => 'Herramientas',  'slug' => 'herramientas',  'description' => 'Herramientas y ferretería'],
+            ['name' => 'Oficina',       'slug' => 'oficina',       'description' => 'Artículos de oficina'],
+        ];
+
+        foreach ($categories as $cat) {
+            DB::table('categories')->upsert(
+                array_merge($cat, ['created_at' => now(), 'updated_at' => now()]),
+                ['slug'],
+                ['name', 'description', 'updated_at']
+            );
+        }
     }
 }
