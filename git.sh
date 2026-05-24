@@ -12,7 +12,7 @@ BLUE='\033[0;34m'; CYAN='\033[0;36m';  MAGENTA='\033[0;35m'
 BOLD='\033[1m';    DIM='\033[2m';      RESET='\033[0m'
 
 COMMITS_OK=0; COMMITS_SKIP=0; COMMITS_FAIL=0
-TOTAL=8
+TOTAL=11
 START_TIME=$SECONDS
 
 # ── Helpers ──────────────────────────────────────────────────
@@ -132,9 +132,13 @@ run_commit 2 "🔐" "Sanctum Authentication" \
     backend/app/Http/Controllers/Api/AuthController.php \
     backend/app/Models/User.php \
     backend/routes/api.php \
+    backend/routes/web.php \
     backend/bootstrap/app.php \
+    backend/bootstrap/providers.php \
     backend/config/auth.php \
     backend/config/sanctum.php \
+    backend/app/Http/Middleware/ForceJsonResponse.php \
+    backend/app/Http/Middleware/RedirectIfUnauthenticated.php \
     "backend/database/migrations/2026_05_20_140139_create_personal_access_tokens_table.php"
 
 # 3 – Controllers API
@@ -145,7 +149,8 @@ run_commit 3 "🎮" "API Controllers" \
     backend/app/Http/Controllers/Api/InvoiceController.php \
     backend/app/Http/Controllers/Api/ProductController.php \
     backend/app/Http/Controllers/Api/ProductImageController.php \
-    backend/app/Http/Controllers/Api/StockController.php
+    backend/app/Http/Controllers/Api/StockController.php \
+    backend/app/Http/Controllers/DevDashController.php
 
 # 4 – Models
 run_commit 4 "📦" "Business Models" \
@@ -158,12 +163,15 @@ run_commit 4 "📦" "Business Models" \
     backend/app/Models/ProductImage.php \
     backend/app/Models/StockMovement.php
 
-# 5 – Services
-run_commit 5 "⚙️" "Business Services" \
-    "feat: add business service layer" "no" \
+# 5 – Services & Providers
+run_commit 5 "⚙️" "Business Services & Providers" \
+    "feat: add business service layer and service providers" "no" \
     backend/app/Services/InvoiceService.php \
     backend/app/Services/ProductService.php \
-    backend/app/Services/StockService.php
+    backend/app/Services/StockService.php \
+    backend/app/Providers/AppServiceProvider.php \
+    backend/app/Providers/TelescopeServiceProvider.php \
+    backend/config/telescope.php
 
 # 6 – Requests
 run_commit 6 "🧾" "Form Requests" \
@@ -181,11 +189,33 @@ run_commit 7 "🌱" "Database Seeders" \
 
 # 8 – Old migrations + Composer
 run_commit 8 "🗂" "Migrations backup + Composer" \
-    "chore: backup legacy migrations and update dependencies" "yes" \
+    "chore: backup legacy migrations and update dependencies" "no" \
     backend/database/old_migrations/ \
     backend/composer.json \
     backend/composer.lock \
     backend/config/cache.php
+
+# 9 – Core business migrations
+run_commit 9 "🗃" "Core Business Migrations" \
+    "feat: add core business table migrations" "no" \
+    "backend/database/migrations/2024_01_000001_create_categories_table.php" \
+    "backend/database/migrations/2024_01_000002_create_clients_table.php" \
+    "backend/database/migrations/2024_01_000003_create_products_table.php" \
+    "backend/database/migrations/2024_01_000004_create_product_images_table.php" \
+    "backend/database/migrations/2024_01_000005_create_stock_movements_table.php" \
+    "backend/database/migrations/2024_01_000006_create_invoices_table.php" \
+    "backend/database/migrations/2024_01_000007_create_invoice_items_table.php"
+
+# 10 – Telescope migration
+run_commit 10 "🔭" "Telescope & Views" \
+    "feat: add Telescope migration and base views" "no" \
+    "backend/database/migrations/2020_05_22_033939_create_telescope_entries_table.php" \
+    backend/resources/views/welcome.blade.php
+
+# 11 – README
+run_commit 11 "📄" "Project Documentation" \
+    "docs: add project README" "yes" \
+    backend/README.md
 
 # ── Resumen ──────────────────────────────────────────────────
 separator
