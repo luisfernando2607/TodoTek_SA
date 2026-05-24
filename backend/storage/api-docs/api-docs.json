@@ -2,13 +2,13 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Todostock API",
-        "description": "Sistema de gestion de productos Todostock",
+        "description": "API REST para el sistema de gestión de productos Todostock",
         "version": "1.0.0"
     },
     "servers": [
         {
             "url": "http://localhost:8000",
-            "description": "API Server"
+            "description": "Servidor local"
         }
     ],
     "paths": {
@@ -764,28 +764,104 @@
                 ]
             }
         },
-        "/api/health": {
+        "/api/products/{id}/stock": {
             "get": {
                 "tags": [
-                    "Sistema"
+                    "Stock"
                 ],
-                "summary": "Health check",
-                "operationId": "f55bd3481fce0c2668d768f679fc876d",
+                "summary": "Historial de movimientos",
+                "operationId": "04bebc0231a32ebc3c4b8ee13e0998e7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Historial"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Stock"
+                ],
+                "summary": "Registrar movimiento de stock",
+                "operationId": "8b06818ae89d47cb3cbbaab0fdf0463e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "type",
+                                    "quantity"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "entry",
+                                            "exit",
+                                            "adjustment"
+                                        ]
+                                    },
+                                    "quantity": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "reason": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Movimiento registrado"
+                    },
+                    "422": {
+                        "description": "Stock insuficiente"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         }
     },
     "components": {
         "securitySchemes": {
             "sanctum": {
-                "type": "apiKey",
-                "description": "Bearer {token}",
-                "name": "Authorization",
-                "in": "header"
+                "type": "http",
+                "description": "Ingresa el token obtenido del login",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
             }
         }
     },
@@ -807,8 +883,8 @@
             "description": "Productos"
         },
         {
-            "name": "Sistema",
-            "description": "Sistema"
+            "name": "Stock",
+            "description": "Stock"
         }
     ]
 }
