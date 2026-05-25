@@ -1,0 +1,161 @@
+<!-- Backdrop -->
+<div class="modal-backdrop fade show"></div>
+
+<!-- Modal -->
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">
+          <i class="bi me-2" [class.bi-plus-circle]="!isEdit" [class.bi-pencil-square]="isEdit"></i>
+          {{ isEdit ? 'Editar producto' : 'Nuevo producto' }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closed.emit()"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <form [formGroup]="form" id="productForm">
+          <div class="row g-3">
+
+            <!-- Nombre -->
+            <div class="col-md-8">
+              <label class="form-label fw-semibold">Nombre <span class="text-danger">*</span></label>
+              <input class="form-control" [class.is-invalid]="isInvalid('name')"
+                formControlName="name" placeholder="Ej: Laptop HP 15">
+              <div class="invalid-feedback">El nombre es requerido.</div>
+            </div>
+
+            <!-- SKU -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">SKU <span class="text-danger">*</span></label>
+              <input class="form-control" [class.is-invalid]="isInvalid('sku')"
+                formControlName="sku" placeholder="ELEC-001">
+              <div class="invalid-feedback">El SKU es requerido.</div>
+            </div>
+
+            <!-- Categoría -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Categoría <span class="text-danger">*</span></label>
+              <select class="form-select" [class.is-invalid]="isInvalid('category_id')"
+                formControlName="category_id">
+                <option value="">-- Seleccionar --</option>
+                <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+              </select>
+              <div class="invalid-feedback">Selecciona una categoría.</div>
+            </div>
+
+            <!-- Estado -->
+            <div class="col-md-6 d-flex align-items-end">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch"
+                  id="activeSwitch" formControlName="active">
+                <label class="form-check-label fw-semibold" for="activeSwitch">Producto activo</label>
+              </div>
+            </div>
+
+            <!-- Precio -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Precio base (sin IVA) <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" class="form-control" [class.is-invalid]="isInvalid('price')"
+                  formControlName="price" min="0" step="0.01">
+              </div>
+              <div class="invalid-feedback">Ingresa un precio válido.</div>
+            </div>
+
+            <!-- IVA -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Tasa IVA (%) <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <input type="number" class="form-control" [class.is-invalid]="isInvalid('tax_rate')"
+                  formControlName="tax_rate" min="0" max="100" step="0.01">
+                <span class="input-group-text">%</span>
+              </div>
+              <small class="text-muted">0% / 5% / 12% / 15%</small>
+            </div>
+
+            <!-- Preview precio final -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Precio final al público</label>
+              <div class="form-control bg-light fw-bold text-success">
+                ${{ ((form.value.price || 0) * (1 + (form.value.tax_rate || 0) / 100)) | number:'1.2-2' }}
+              </div>
+            </div>
+
+            <!-- Stock -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Stock inicial <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" [class.is-invalid]="isInvalid('stock')"
+                formControlName="stock" min="0" [attr.disabled]="isEdit ? true : null">
+              <small class="text-muted" *ngIf="isEdit">Usa el módulo de Stock para modificar existencias.</small>
+            </div>
+
+            <!-- Stock mínimo -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Stock mínimo (alerta) <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" [class.is-invalid]="isInvalid('stock_min')"
+                formControlName="stock_min" min="0">
+            </div>
+
+            <!-- Descripción -->
+            <div class="col-12">
+              <label class="form-label fw-semibold">Descripción</label>
+              <textarea class="form-control" formControlName="description" rows="3"
+                placeholder="Descripción del producto..."></textarea>
+            </div>
+
+            <!-- Imágenes existentes -->
+            <div class="col-12" *ngIf="existingImages.length > 0">
+              <label class="form-label fw-semibold">Imágenes actuales</label>
+              <div class="d-flex flex-wrap gap-2">
+                <div *ngFor="let img of existingImages" class="position-relative">
+                  <img [src]="img.url" class="rounded border object-fit-cover" width="80" height="80">
+                  <span *ngIf="img.is_main" class="badge bg-primary position-absolute top-0 start-0"
+                    style="font-size:.6rem">Principal</span>
+                  <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 p-0"
+                    style="width:20px;height:20px;font-size:.6rem"
+                    (click)="removeExistingImage(img.id)">
+                    <i class="bi bi-x"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Subir nuevas imágenes -->
+            <div class="col-12">
+              <label class="form-label fw-semibold">
+                {{ isEdit ? 'Agregar más imágenes' : 'Imágenes del producto' }}
+              </label>
+              <input type="file" class="form-control" multiple accept="image/*"
+                (change)="onFilesSelected($event)">
+              <small class="text-muted">Máx. 10 imágenes · JPG, PNG, WebP · 2 MB c/u</small>
+              <!-- Previews -->
+              <div class="d-flex flex-wrap gap-2 mt-2" *ngIf="previews.length > 0">
+                <img *ngFor="let prev of previews" [src]="prev"
+                  class="rounded border object-fit-cover" width="80" height="80">
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">
+          Cancelar
+        </button>
+        <button type="submit" form="productForm" class="btn btn-primary"
+          (click)="submit()" [disabled]="loading">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+          {{ loading ? 'Guardando...' : (isEdit ? 'Actualizar' : 'Crear producto') }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

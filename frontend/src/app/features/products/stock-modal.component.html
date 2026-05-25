@@ -1,0 +1,96 @@
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title">
+          <i class="bi bi-arrow-left-right me-2"></i>Movimiento de Stock
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closed.emit()"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Info producto -->
+        <div class="alert alert-light border d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <div class="fw-bold">{{ product.name }}</div>
+            <small class="text-muted font-monospace">{{ product.sku }}</small>
+          </div>
+          <div class="text-end">
+            <div class="fs-4 fw-bold" [class.text-danger]="product.is_low_stock"
+              [class.text-success]="!product.is_low_stock">
+              {{ product.stock }}
+            </div>
+            <small class="text-muted">stock actual</small>
+          </div>
+        </div>
+
+        <form [formGroup]="form">
+
+          <!-- Tipo de movimiento -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Tipo de movimiento</label>
+            <div class="d-flex gap-2">
+              <div *ngFor="let opt of [
+                {val:'entry',      label:'Entrada',  icon:'bi-arrow-down-circle-fill',  color:'success'},
+                {val:'exit',       label:'Salida',   icon:'bi-arrow-up-circle-fill',    color:'danger'},
+                {val:'adjustment', label:'Ajuste',   icon:'bi-sliders',                 color:'warning'}
+              ]">
+                <input type="radio" class="btn-check" [id]="opt.val" [value]="opt.val"
+                  formControlName="type">
+                <label class="btn btn-outline-{{opt.color}}" [for]="opt.val">
+                  <i class="bi {{opt.icon}} me-1"></i>{{ opt.label }}
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cantidad -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">
+              {{ form.value.type === 'adjustment' ? 'Nuevo valor de stock' : 'Cantidad' }}
+            </label>
+            <input type="number" class="form-control"
+              [class.is-invalid]="form.get('quantity')?.invalid && form.get('quantity')?.touched"
+              formControlName="quantity" min="1">
+            <div class="invalid-feedback">Ingresa una cantidad válida (mínimo 1).</div>
+          </div>
+
+          <!-- Preview resultado -->
+          <div class="alert mb-3"
+            [class.alert-success]="resultingStock >= product.stock_min"
+            [class.alert-danger]="resultingStock < product.stock_min">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="fw-semibold">Stock resultante:</span>
+              <span class="fs-5 fw-bold">{{ resultingStock }}</span>
+            </div>
+            <small *ngIf="resultingStock < product.stock_min" class="text-danger">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i>
+              Quedará por debajo del mínimo ({{ product.stock_min }})
+            </small>
+          </div>
+
+          <!-- Razón -->
+          <div class="mb-1">
+            <label class="form-label fw-semibold">Motivo</label>
+            <textarea class="form-control" formControlName="reason" rows="2"
+              placeholder="Ej: Compra proveedor ABC, Venta mostrador, Ajuste inventario...">
+            </textarea>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" (click)="closed.emit()">Cancelar</button>
+        <button class="btn btn-success" (click)="submit()" [disabled]="loading">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+          {{ loading ? 'Guardando...' : 'Registrar movimiento' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
