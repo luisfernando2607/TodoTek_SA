@@ -1,0 +1,70 @@
+<div class="login-wrapper d-flex align-items-center justify-content-center min-vh-100 bg-light">
+  <div class="card shadow-sm border-0" style="width: 400px;">
+
+    <!-- Header -->
+    <div class="card-header bg-primary text-white text-center py-4">
+      <h4 class="mb-0 fw-bold">
+        <i class="bi bi-boxes me-2"></i>Todostock
+      </h4>
+      <small class="opacity-75">Sistema de Gestión de Productos</small>
+    </div>
+
+    <!-- Body -->
+    <div class="card-body p-4">
+      <form [formGroup]="form" (ngSubmit)="submit()">
+
+        <!-- Email -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Correo electrónico</label>
+          <input
+            type="email"
+            class="form-control"
+            [class.is-invalid]="isInvalid('email')"
+            formControlName="email"
+            placeholder="admin@todostock.com"
+            autocomplete="email"
+          />
+          <div class="invalid-feedback">Ingresa un email válido.</div>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Contraseña</label>
+          <div class="input-group">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-control"
+              [class.is-invalid]="isInvalid('password')"
+              formControlName="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+            />
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="showPassword = !showPassword"
+            >
+              <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+            </button>
+            <div class="invalid-feedback">Mínimo 6 caracteres.</div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="btn btn-primary w-100"
+          [disabled]="loading"
+        >
+          <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+          {{ loading ? 'Ingresando...' : 'Iniciar sesión' }}
+        </button>
+
+      </form>
+    </div>
+
+    <div class="card-footer text-center text-muted py-3">
+      <small>Todotek S.A. &copy; 2024</small>
+    </div>
+  </div>
+</div>

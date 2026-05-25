@@ -1,0 +1,159 @@
+<div class="container-fluid py-4">
+
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h4 class="mb-0 fw-bold">
+      <i class="bi bi-receipt me-2 text-primary"></i>Nueva Factura
+    </h4>
+    <a routerLink="/invoices" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-arrow-left me-1"></i>Volver
+    </a>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- Columna izquierda: selección -->
+    <div class="col-lg-7">
+
+      <!-- Cliente -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white fw-semibold">
+          <i class="bi bi-person me-2 text-primary"></i>Cliente
+        </div>
+        <div class="card-body">
+          <select class="form-select" [(ngModel)]="selectedClientId">
+            <option [ngValue]="null">-- Seleccionar cliente --</option>
+            <option *ngFor="let c of clients" [value]="c.id">
+              {{ c.name }} — {{ c.identification }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Agregar producto -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white fw-semibold">
+          <i class="bi bi-plus-circle me-2 text-success"></i>Agregar producto
+        </div>
+        <div class="card-body">
+          <div class="row g-2 align-items-end">
+            <div class="col-md-5">
+              <label class="form-label small fw-semibold">Buscar producto</label>
+              <input class="form-control form-control-sm" [(ngModel)]="productSearch"
+                placeholder="Nombre o SKU...">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Seleccionar</label>
+              <select class="form-select form-select-sm" [(ngModel)]="selectedProductId">
+                <option [ngValue]="null">-- Producto --</option>
+                <option *ngFor="let p of filteredProducts" [value]="p.id"
+                  [disabled]="p.stock === 0">
+                  {{ p.name }} (stock: {{ p.stock }})
+                </option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label small fw-semibold">Cantidad</label>
+              <input type="number" class="form-control form-control-sm"
+                [(ngModel)]="quantity" min="1">
+            </div>
+            <div class="col-md-1">
+              <button class="btn btn-success btn-sm w-100" (click)="addToCart()">
+                <i class="bi bi-plus-lg"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notas -->
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white fw-semibold">
+          <i class="bi bi-chat-text me-2"></i>Notas
+        </div>
+        <div class="card-body">
+          <textarea class="form-control" [(ngModel)]="notes" rows="2"
+            placeholder="Observaciones de la factura..."></textarea>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Columna derecha: carrito + totales -->
+    <div class="col-lg-5">
+      <div class="card border-0 shadow-sm sticky-top" style="top:1rem">
+        <div class="card-header bg-white fw-semibold d-flex justify-content-between">
+          <span><i class="bi bi-cart me-2 text-primary"></i>Detalle de factura</span>
+          <span class="badge bg-primary">{{ cart.length }} ítem(s)</span>
+        </div>
+        <div class="card-body p-0">
+
+          <!-- Carrito vacío -->
+          <div *ngIf="cart.length === 0" class="text-center py-5 text-muted">
+            <i class="bi bi-cart-x fs-2 d-block mb-2"></i>
+            Sin productos agregados
+          </div>
+
+          <!-- Tabla carrito -->
+          <div class="table-responsive" *ngIf="cart.length > 0">
+            <table class="table table-sm align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Producto</th>
+                  <th class="text-center">Cant.</th>
+                  <th class="text-end">Total</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of cart; let i = index">
+                  <td>
+                    <div class="fw-semibold small">{{ item.product.name }}</div>
+                    <small class="text-muted">${{ item.product.price | number:'1.2-2' }} + {{ item.product.tax_rate }}% IVA</small>
+                  </td>
+                  <td class="text-center" style="width:80px">
+                    <input type="number" class="form-control form-control-sm text-center"
+                      [value]="item.quantity" min="1"
+                      (change)="updateQty(item, +$any($event.target).value)">
+                  </td>
+                  <td class="text-end fw-semibold">${{ item.total | number:'1.2-2' }}</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-danger p-0 px-1" (click)="removeFromCart(i)">
+                      <i class="bi bi-x"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Totales -->
+          <div class="border-top p-3" *ngIf="cart.length > 0">
+            <div class="d-flex justify-content-between mb-1">
+              <span class="text-muted">Subtotal:</span>
+              <span>${{ subtotal | number:'1.2-2' }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-muted">Impuestos:</span>
+              <span>${{ taxAmount | number:'1.2-2' }}</span>
+            </div>
+            <div class="d-flex justify-content-between fw-bold fs-5 border-top pt-2">
+              <span>TOTAL:</span>
+              <span class="text-primary">${{ totalAmount | number:'1.2-2' }}</span>
+            </div>
+          </div>
+
+          <!-- Botón emitir -->
+          <div class="p-3">
+            <button class="btn btn-primary w-100" (click)="submit()" [disabled]="saving || cart.length === 0">
+              <span *ngIf="saving" class="spinner-border spinner-border-sm me-1"></span>
+              <i *ngIf="!saving" class="bi bi-receipt-cutoff me-1"></i>
+              {{ saving ? 'Emitiendo...' : 'Emitir Factura' }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
