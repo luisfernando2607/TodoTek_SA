@@ -1,0 +1,49 @@
+<nav class="sidebar d-flex flex-column bg-dark text-white" [class.collapsed]="collapsed">
+
+  <!-- Logo / Toggle -->
+  <div class="sidebar-header d-flex align-items-center justify-content-between px-3 py-3">
+    <span class="brand fw-bold fs-5" *ngIf="!collapsed">
+      <i class="bi bi-boxes text-primary me-2"></i>Todostock
+    </span>
+    <button class="btn btn-sm btn-outline-secondary ms-auto" (click)="collapsed = !collapsed">
+      <i class="bi" [class.bi-list]="collapsed" [class.bi-x-lg]="!collapsed"></i>
+    </button>
+  </div>
+
+  <hr class="border-secondary mx-3 my-0">
+
+  <!-- User info -->
+  <div class="px-3 py-2 text-muted small" *ngIf="!collapsed">
+    <i class="bi bi-person-circle me-1"></i>
+    {{ auth.currentUser()?.name }}
+  </div>
+
+  <hr class="border-secondary mx-3 my-0">
+
+  <!-- Nav links -->
+  <ul class="nav flex-column px-2 py-2 flex-grow-1">
+    <li class="nav-item" *ngFor="let item of navItems">
+      <a
+        class="nav-link text-white rounded d-flex align-items-center gap-2 py-2 px-3"
+        [routerLink]="item.route"
+        routerLinkActive="active bg-primary"
+        [title]="item.label"
+      >
+        <i class="bi fs-5" [ngClass]="item.icon"></i>
+        <span *ngIf="!collapsed">{{ item.label }}</span>
+      </a>
+    </li>
+  </ul>
+
+  <!-- Logout -->
+  <div class="px-2 py-3">
+    <button
+      class="btn btn-outline-danger w-100 d-flex align-items-center gap-2"
+      (click)="logout()"
+      [title]="'Cerrar sesión'"
+    >
+      <i class="bi bi-box-arrow-right fs-5"></i>
+      <span *ngIf="!collapsed">Cerrar sesión</span>
+    </button>
+  </div>
+</nav>
