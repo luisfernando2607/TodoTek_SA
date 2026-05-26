@@ -183,6 +183,18 @@ class ProductController extends Controller
         ],
         responses: [new OA\Response(response: 200, description: 'Imagen eliminada')]
     )]
+    public function storeImage(Request $request, Product $product): JsonResponse
+    {
+        $request->validate([
+            'images'   => 'required|array',
+            'images.*' => 'image|max:2048',
+        ]);
+
+        $product = $this->productService->addImages($product, $request->file('images'));
+
+        return response()->json($product, 201);
+    }
+
     public function destroyImage(Product $product, ProductImage $image): JsonResponse
     {
         $this->productService->deleteImage($image);

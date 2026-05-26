@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
 use App\Services\InvoiceService;
+use Dompdf\Dompdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
@@ -95,6 +96,27 @@ class InvoiceController extends Controller
     public function show(Invoice $invoice): JsonResponse
     {
         return response()->json($invoice->load(['client', 'user', 'items.product']));
+    }
+
+    public function pdf(Invoice $invoice): \Illuminate\Http\Response
+    {
+        $invoice->load(['client', 'items']);
+
+        $html = view('pdf.invoice', compact('invoice'))->render();
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        return response(
+            $dompdf->output(),
+            200,
+            [
+                'Content-Type'        => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $invoice->invoice_number . '.pdf"',
+            ]
+        );
     }
 
     #[OA\Patch(
