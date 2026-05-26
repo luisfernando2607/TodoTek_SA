@@ -88,8 +88,13 @@ export class ProductListComponent implements OnInit {
   }
 
   openEdit(product: Product): void {
-    this.selectedProduct = product;
-    this.showFormModal   = true;
+    this.productSvc.getOne(product.id).subscribe({
+      next: full => {
+        this.selectedProduct = full;
+        this.showFormModal   = true;
+      },
+      error: () => this.notify.error('Error al cargar el producto.'),
+    });
   }
 
   openStock(product: Product): void {
