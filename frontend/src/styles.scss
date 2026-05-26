@@ -1,1 +1,204 @@
-/* You can add global styles to this file, and also import other style files */
+/* ── Bootstrap core ───────────────────────────────────────── */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+/* ── Layout responsive ───────────────────────────────────── */
+.layout-wrapper {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+}
+
+.sidebar-container {
+    flex-shrink: 0;
+}
+
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .5);
+    z-index: 1040;
+    opacity: 0;
+    transition: opacity .25s ease;
+
+    &.show {
+        opacity: 1;
+    }
+}
+
+.main-content {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.mobile-topbar {
+    display: flex;
+    align-items: center;
+    z-index: 1030;
+}
+
+@media (max-width: 767.98px) {
+    .sidebar-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 1050;
+        transform: translateX(-100%);
+        transition: transform .3s ease;
+
+        &.mobile-open {
+            transform: translateX(0);
+        }
+    }
+
+    .sidebar-backdrop {
+        display: block;
+        pointer-events: none;
+
+        &.show {
+            pointer-events: auto;
+        }
+    }
+}
+
+/* ── Sidebar ──────────────────────────────────────────────── */
+.sidebar {
+    width: 240px;
+    min-height: 100vh;
+    transition: width 0.25s ease;
+    flex-shrink: 0;
+
+    &.collapsed {
+        width: 64px;
+
+        .brand,
+        span {
+            display: none !important;
+        }
+    }
+
+    .nav-link {
+        transition: background 0.15s;
+        white-space: nowrap;
+
+        &:hover {
+            background: rgba(255, 255, 255, .08);
+        }
+
+        &.active {
+            font-weight: 600;
+        }
+    }
+}
+
+/* ── General ──────────────────────────────────────────────── */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* ── Tables ───────────────────────────────────────────────── */
+.table thead th {
+    font-size: .8rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+/* ── Cards ────────────────────────────────────────────────── */
+.card {
+    border-radius: .75rem !important;
+}
+
+/* ── Modales ──────────────────────────────────────────────── */
+.modal-backdrop.show {
+    opacity: .5;
+}
+
+.modal-dialog-scrollable .modal-body {
+    overflow-y: auto;
+    max-height: 70vh;
+}
+
+@media (max-width: 575.98px) {
+    .modal-dialog-scrollable .modal-body {
+        max-height: none;
+    }
+
+    .modal-footer {
+        flex-wrap: wrap;
+        gap: .5rem;
+
+        .btn {
+            flex: 1 1 100%;
+        }
+    }
+}
+
+/* ── Object fit ───────────────────────────────────────────── */
+.object-fit-cover {
+    object-fit: cover;
+}
+
+/* ── Login page ───────────────────────────────────────────── */
+.login-wrapper {
+    background: linear-gradient(135deg, #1a3c5e 0%, #2e86c1 100%);
+    min-height: 100vh;
+}
+
+/* ── Stock bajo blink ─────────────────────────────────────── */
+@keyframes blink-warning {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .4;
+    }
+}
+
+.stock-low-blink {
+    animation: blink-warning 1.4s ease-in-out infinite;
+}
+
+/* ── SweetAlert2 sobre modales Bootstrap ─────────────────── */
+.swal2-container {
+    z-index: 9999 !important;
+}
+
+/* ── Scrollbar personalizado ──────────────────────────────── */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #adb5bd;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6c757d;
+}
+
+/* ── Responsive helpers ───────────────────────────────────── */
+@media (max-width: 575.98px) {
+    .container-fluid {
+        padding-left: .75rem !important;
+        padding-right: .75rem !important;
+    }
+
+    .card-body {
+        padding: 1rem !important;
+    }
+
+    h4 {
+        font-size: 1.1rem;
+    }
+}
