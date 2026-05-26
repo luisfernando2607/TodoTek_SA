@@ -104,8 +104,7 @@ class InvoiceService
      */
     private function nextInvoiceNumber(): string
     {
-        $last = Invoice::withTrashed()
-            ->where('invoice_number', 'like', 'FAC-%')
+        $last = Invoice::where('invoice_number', 'like', 'FAC-%')
             ->orderByDesc('id')
             ->value('invoice_number');
 
