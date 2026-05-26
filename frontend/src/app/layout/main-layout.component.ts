@@ -8,12 +8,29 @@ import { SidebarComponent } from './sidebar/sidebar.component';
   standalone: true,
   imports: [CommonModule, RouterModule, SidebarComponent],
   template: `
-<div class="d-flex" style="min-height:100vh">
-  <app-sidebar></app-sidebar>
-  <main class="flex-grow-1 bg-light overflow-auto">
+<div class="layout-wrapper" style="min-height:100vh">
+  <div
+    class="sidebar-backdrop d-md-none"
+    [class.show]="mobileOpen"
+    (click)="mobileOpen = false"
+  ></div>
+
+  <div class="sidebar-container" [class.mobile-open]="mobileOpen">
+    <app-sidebar (closeMobile)="mobileOpen = false"></app-sidebar>
+  </div>
+
+  <main class="main-content bg-light overflow-auto">
+    <div class="mobile-topbar d-md-none px-3 py-2 bg-white border-bottom sticky-top">
+      <button class="btn btn-sm btn-outline-primary" (click)="mobileOpen = !mobileOpen">
+        <i class="bi bi-list fs-5"></i>
+      </button>
+      <span class="ms-2 fw-bold"><i class="bi bi-boxes text-primary me-1"></i>Todostock</span>
+    </div>
     <router-outlet></router-outlet>
   </main>
 </div>
   `,
 })
-export class MainLayoutComponent {}
+export class MainLayoutComponent {
+  mobileOpen = false;
+}

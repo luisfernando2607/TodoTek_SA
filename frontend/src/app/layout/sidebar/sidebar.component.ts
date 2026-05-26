@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -17,6 +17,8 @@ interface NavItem {
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent {
+  @Output() closeMobile = new EventEmitter<void>();
+
   collapsed = false;
 
   navItems: NavItem[] = [
@@ -31,6 +33,10 @@ export class SidebarComponent {
     public  auth:   AuthService,
     private notify: NotificationService,
   ) {}
+
+  onNavClick(): void {
+    this.closeMobile.emit();
+  }
 
   logout(): void {
     this.notify.confirm(
