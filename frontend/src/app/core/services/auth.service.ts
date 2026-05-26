@@ -7,18 +7,17 @@ import { environment } from '../../../environments/environment';
 import { AuthResponse, LoginPayload, User } from '../models/models';
 
 const TOKEN_KEY = 'sanctum_token';
-const USER_KEY  = 'auth_user';
+const USER_KEY = 'auth_user';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  // Signal reactivo para el usuario actual
   currentUser = signal<User | null>(this.storedUser());
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) { }
 
   login(payload: LoginPayload): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/login`, payload).pipe(
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, payload).pipe(
       tap(res => {
         localStorage.setItem(TOKEN_KEY, res.token);
         localStorage.setItem(USER_KEY, JSON.stringify(res.user));
@@ -28,9 +27,9 @@ export class AuthService {
   }
 
   logout(): void {
-    this.http.post(`${environment.apiUrl}/logout`, {}).subscribe({
+    this.http.post(`${environment.apiUrl}/auth/logout`, {}).subscribe({
       complete: () => this.clearSession(),
-      error:    () => this.clearSession(),   // Limpiar aunque falle la red
+      error: () => this.clearSession(),
     });
   }
 
