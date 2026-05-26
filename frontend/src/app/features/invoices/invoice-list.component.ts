@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { InvoiceService } from '../../core/services/api.services';
 import { NotificationService } from '../../core/services/notification.service';
 import { Invoice } from '../../core/models/models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-invoice-list',
@@ -29,6 +31,7 @@ export class InvoiceListComponent implements OnInit {
   constructor(
     private svc:    InvoiceService,
     private notify: NotificationService,
+    private http:   HttpClient,
   ) {}
 
   ngOnInit(): void { this.load(); }
@@ -51,6 +54,26 @@ export class InvoiceListComponent implements OnInit {
     this.svc.getOne(inv.id).subscribe(full => {
       this.detailInvoice = full;
       this.loadingDetail  = false;
+    });
+  }
+
+  downloadPdf(inv: Invoice, download = false): void {
+    this.http.get(`${environment.apiUrl}/invoices/${inv.id}/pdf`, {
+      responseType: 'blob',
+    }).subscribe({
+      next: blob => {
+        const blobUrl = URL.createObjectURL(blob);
+        if (download) {
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = `${inv.invoice_number}.pdf`;
+          a.click();
+        } else {
+          window.open(blobUrl, '_blank');
+        }
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+      },
+      error: () => this.notify.error('Error al generar el PDF.'),
     });
   }
 

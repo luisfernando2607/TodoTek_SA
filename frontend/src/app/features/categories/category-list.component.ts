@@ -62,7 +62,7 @@ import { environment } from '../../../environments/environment';
 <ng-container *ngIf="showModal">
   <div class="modal-backdrop fade show"></div>
   <div class="modal fade show d-block" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-fullscreen-sm-down">
       <div class="modal-content">
         <div class="modal-header bg-primary text-white">
           <h5 class="modal-title">

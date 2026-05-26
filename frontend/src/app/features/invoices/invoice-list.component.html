@@ -81,6 +81,9 @@
                   <button class="btn btn-outline-primary" (click)="openDetail(inv)" title="Ver detalle">
                     <i class="bi bi-eye"></i>
                   </button>
+                  <button class="btn btn-outline-info" (click)="downloadPdf(inv)" title="Ver PDF">
+                    <i class="bi bi-file-pdf"></i>
+                  </button>
                   <button class="btn btn-outline-danger" (click)="cancelInvoice(inv)"
                     [disabled]="inv.status === 'cancelled'" title="Cancelar">
                     <i class="bi bi-x-circle"></i>
@@ -114,7 +117,7 @@
 <ng-container *ngIf="showDetail">
   <div class="modal-backdrop fade show"></div>
   <div class="modal fade show d-block" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-fullscreen-sm-down">
       <div class="modal-content">
         <div class="modal-header bg-primary text-white">
           <h5 class="modal-title">
@@ -192,6 +195,12 @@
             *ngIf="detailInvoice?.status !== 'cancelled'"
             (click)="cancelInvoice(detailInvoice!)">
             <i class="bi bi-x-circle me-1"></i>Cancelar factura
+          </button>
+          <button class="btn btn-outline-info" (click)="downloadPdf(detailInvoice!)">
+            <i class="bi bi-eye me-1"></i>Ver PDF
+          </button>
+          <button class="btn btn-primary" (click)="downloadPdf(detailInvoice!, true)">
+            <i class="bi bi-download me-1"></i>Descargar PDF
           </button>
           <button class="btn btn-secondary" (click)="showDetail=false">Cerrar</button>
         </div>
