@@ -98,6 +98,17 @@ class InvoiceController extends Controller
         return response()->json($invoice->load(['client', 'user', 'items.product']));
     }
 
+    #[OA\Get(
+        path: '/api/invoices/{id}/pdf',
+        summary: 'Descargar factura en PDF',
+        tags: ['Facturas'],
+        security: [['sanctum' => []]],
+        parameters: [new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))],
+        responses: [
+            new OA\Response(response: 200, description: 'PDF de la factura'),
+            new OA\Response(response: 404, description: 'Factura no encontrada'),
+        ]
+    )]
     public function pdf(Invoice $invoice): \Illuminate\Http\Response
     {
         $invoice->load(['client', 'items']);

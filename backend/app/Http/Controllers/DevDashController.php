@@ -144,12 +144,16 @@ class DevDashController extends Controller
         $framework = file_exists($pestBin) ? 'Pest' : 'PHPUnit';
 
         $process = new Process(
-            [$binary, '--colors=never', '--no-interaction', '--testdox'],
+            [$binary, '--colors=never', '--testdox'],
             base_path(),
             [
-                'APP_ENV'  => 'testing',
-                'DB_CONNECTION' => 'sqlite',
-                'DB_DATABASE'   => ':memory:',
+                'APP_ENV'      => 'testing',
+                'DB_CONNECTION' => config('database.default', 'pgsql'),
+                'DB_DATABASE'   => 'todotek_test',
+                'DB_HOST'       => config('database.connections.pgsql.host', '127.0.0.1'),
+                'DB_PORT'       => config('database.connections.pgsql.port', '5432'),
+                'DB_USERNAME'   => config('database.connections.pgsql.username', 'postgres'),
+                'DB_PASSWORD'   => config('database.connections.pgsql.password', ''),
             ],
             null,
             180

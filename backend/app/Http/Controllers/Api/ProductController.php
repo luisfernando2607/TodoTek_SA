@@ -172,16 +172,27 @@ class ProductController extends Controller
         return response()->json(['message' => 'Producto eliminado correctamente']);
     }
 
-    #[OA\Delete(
-        path: '/api/products/{id}/images/{imageId}',
-        summary: 'Eliminar imagen de un producto',
+    #[OA\Post(
+        path: '/api/products/{id}/images',
+        summary: 'Subir imágenes a un producto',
         tags: ['Productos'],
         security: [['sanctum' => []]],
-        parameters: [
-            new OA\Parameter(name: 'id',      in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
-            new OA\Parameter(name: 'imageId', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
-        ],
-        responses: [new OA\Response(response: 200, description: 'Imagen eliminada')]
+        parameters: [new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\MediaType(
+                mediaType: 'multipart/form-data',
+                schema: new OA\Schema(
+                    properties: [
+                        new OA\Property(property: 'images', type: 'array', items: new OA\Items(type: 'string', format: 'binary')),
+                    ]
+                )
+            )
+        ),
+        responses: [
+            new OA\Response(response: 201, description: 'Imágenes subidas'),
+            new OA\Response(response: 422, description: 'Error de validación'),
+        ]
     )]
     public function storeImage(Request $request, Product $product): JsonResponse
     {
@@ -195,6 +206,17 @@ class ProductController extends Controller
         return response()->json($product, 201);
     }
 
+    #[OA\Delete(
+        path: '/api/products/{id}/images/{imageId}',
+        summary: 'Eliminar imagen de un producto',
+        tags: ['Productos'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'id',      in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+            new OA\Parameter(name: 'imageId', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+        ],
+        responses: [new OA\Response(response: 200, description: 'Imagen eliminada')]
+    )]
     public function destroyImage(Product $product, ProductImage $image): JsonResponse
     {
         $this->productService->deleteImage($image);

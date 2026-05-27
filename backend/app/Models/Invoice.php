@@ -1,9 +1,11 @@
 <?php
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Invoice extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'client_id', 'user_id', 'invoice_number',
         'subtotal', 'tax_amount', 'total',
