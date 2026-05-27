@@ -18,6 +18,7 @@ interface NavItem {
 })
 export class SidebarComponent {
   @Output() closeMobile = new EventEmitter<void>();
+  @Output() collapsedChange = new EventEmitter<boolean>();
 
   collapsed = false;
 
@@ -33,6 +34,11 @@ export class SidebarComponent {
     public  auth:   AuthService,
     private notify: NotificationService,
   ) {}
+
+  toggleCollapsed(): void {
+    this.collapsed = !this.collapsed;
+    this.collapsedChange.emit(this.collapsed);
+  }
 
   onNavClick(): void {
     this.closeMobile.emit();

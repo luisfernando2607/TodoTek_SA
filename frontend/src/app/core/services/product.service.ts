@@ -52,6 +52,10 @@ export class ProductService {
   }
 
   // ── Stock ─────────────────────────────────────────────────────
+  getStockHistory(id: number): Observable<any> {
+    return this.http.get(`${this.base}/${id}/stock`);
+  }
+
   moveStock(id: number, payload: StockMovePayload): Observable<{
     message: string; movement: StockMovement; stock: number;
     low_stock: boolean; warning?: string;

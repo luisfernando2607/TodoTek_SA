@@ -8,7 +8,7 @@
       <button class="btn btn-sm btn-outline-secondary d-md-none" (click)="closeMobile.emit()">
         <i class="bi bi-x-lg"></i>
       </button>
-      <button class="btn btn-sm btn-outline-secondary d-none d-md-inline" (click)="collapsed = !collapsed">
+      <button class="btn btn-sm btn-outline-secondary d-none d-md-inline" (click)="toggleCollapsed()">
         <i class="bi" [class.bi-list]="collapsed" [class.bi-x-lg]="!collapsed"></i>
       </button>
     </div>
