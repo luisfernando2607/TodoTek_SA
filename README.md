@@ -6,17 +6,18 @@ Stack: **Laravel 13** · **Angular 19** · **PostgreSQL 15** · **Sanctum 4.3** 
 
 ---
 
-✨ Características principales
-✅ Gestión completa de productos
-✅ Facturación con cálculo automático de IVA
-✅ Descarga de facturas en PDF
-✅ Control y auditoría de stock
-✅ Dashboard técnico backend
-✅ Health Checks automáticos
-✅ Swagger UI interactivo
-✅ Laravel Telescope
-✅ Tests automáticos
-✅ Arquitectura SPA + API REST
+## ✨ Características principales
+
+- ✅ Gestión completa de productos
+- ✅ Facturación con cálculo automático de IVA
+- ✅ Descarga de facturas en PDF
+- ✅ Control y auditoría de stock
+- ✅ Dashboard técnico backend
+- ✅ Health Checks automáticos
+- ✅ Swagger UI interactivo
+- ✅ Laravel Telescope
+- ✅ Tests automáticos
+- ✅ Arquitectura SPA + API REST
 
 ---
 
